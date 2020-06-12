@@ -56,6 +56,7 @@ static const unsigned char PROGMEM logo3_bmp[] =
 };
 
 
+
 void setup() {
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
