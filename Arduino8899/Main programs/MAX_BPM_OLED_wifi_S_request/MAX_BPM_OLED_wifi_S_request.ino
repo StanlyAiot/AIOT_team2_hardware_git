@@ -112,7 +112,7 @@ void loop() {
       noTone(3);                                          //Deactivate the buzzer to have the effect of a "bip"
       //We sensed a beat!
 
-      servletGo(beatAvg);
+      servletGo(beatAvg);                //stan___ call my function to send data to servlet
       
       long delta = millis() - lastBeat;                   //Measure duration between two beats
       lastBeat = millis();
