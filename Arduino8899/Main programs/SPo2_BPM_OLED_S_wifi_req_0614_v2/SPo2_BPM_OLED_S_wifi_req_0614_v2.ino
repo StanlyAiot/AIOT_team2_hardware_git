@@ -9,7 +9,7 @@
 #include "Adafruit_GFX.h"
 #include "OakOLED.h"
 
-#define REPORTING_PERIOD_MS 1000
+#define REPORTING_PERIOD_MS 1000   
 
 OakOLED oled;
 
@@ -60,6 +60,8 @@ void setup()
   Serial.println(WiFi.localIP());
   Serial.print("WiFi RSSI: ");
   Serial.println(WiFi.RSSI());
+  
+  
 
   oled.begin();
   oled.clearDisplay();
@@ -70,7 +72,7 @@ void setup()
   oled.println("Initializing pulse oximeter..");
   oled.display();
 
-  pinMode(16, OUTPUT);
+  //pinMode(16, OUTPUT);
   Serial.print("Initializing pulse oximeter..");
 
 
@@ -110,7 +112,7 @@ void setup()
 void loop() {
 
   // REPLACE with your Domain name and URL path or IP address with path
-  //const char* serverName = "http://192.168.10.12:8080/FinalProject/bpminsert";        //Stan==> for send data to jsp===============================================
+  //const char* serverName = "http://192.168.10.12:8080/FinalProject/bpminsert";        //Stan==> send data to jsp===============================================
   const char* serverName = "http://192.168.0.3:8080/FinalProject/bpminsert";
 
   pox.update();
@@ -120,7 +122,8 @@ void loop() {
 
   //Check WiFi connection status
   if (WiFi.status() == WL_CONNECTED) {
-    HTTPClient http;
+
+    HTTPClient http;    
 
     // Your Domain name with URL path or IP address with path
     http.begin(serverName);
@@ -159,12 +162,13 @@ void loop() {
       oled.println(pox.getSpO2());
       oled.display();
       tsLastReport = millis();
-
-      //delay(1000);
+      
+      
      
       
       // Prepare your HTTP POST request data
       String httpRequestData = "Pulse_Rate=" + String(BPM) + "&SpO2=" + String(SpO2) + "&Patno=20";
+       
      
 
       Serial.print("BPM: ");
@@ -192,8 +196,7 @@ void loop() {
       http.end();
 
     }
-    
-
+   
   }
   else {
     Serial.println("WiFi Disconnected");    //Stan=====> display no WiFi
