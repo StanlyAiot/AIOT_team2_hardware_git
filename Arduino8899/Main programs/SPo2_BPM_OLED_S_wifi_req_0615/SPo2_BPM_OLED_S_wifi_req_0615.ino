@@ -78,6 +78,11 @@ void setup()
 
 
 
+}
+
+
+void loop() {
+
   if (!pox.begin()) {
     Serial.println("FAILED");
     oled.clearDisplay();
@@ -107,11 +112,13 @@ void setup()
   // Register a callback for the beat detection
   pox.setOnBeatDetectedCallback(onBeatDetected);
 
-}
 
 
-void loop() {
 
+
+
+  
+/*
   // REPLACE with your Domain name and URL path or IP address with path
   //const char* serverName = "http://192.168.10.12:8080/FinalProject/bpminsert";        //Stan==> send data to jsp===============================================
   const char* serverName = "http://192.168.0.3:8080/FinalProject/bpminsert";
@@ -203,11 +210,11 @@ void loop() {
 
       }
     */
-
+/*
   }
   else {
     Serial.println("WiFi Disconnected");    //Stan=====> display no WiFi
-  }
+  }*/
 
   //Send an HTTP POST request every 5 seconds
   //delay(5000);
