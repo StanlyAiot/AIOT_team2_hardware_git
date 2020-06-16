@@ -5,8 +5,6 @@
 #include <WiFiClient.h>        //Stan==> for send data to jsp
 #include "MAX30100_PulseOximeter.h"
 
-
-
 #include "Wire.h"
 #include "Adafruit_GFX.h"
 #include "OakOLED.h"
@@ -69,20 +67,20 @@ void setup()
   Serial.println(WiFi.localIP());
   Serial.print("WiFi RSSI: ");
   Serial.println(WiFi.RSSI());
+  /*
+    oled.begin();
+    oled.clearDisplay();
+    oled.setTextSize(1);
+    oled.setTextColor(1);
+    oled.setCursor(0, 0);
 
-  oled.begin();
-  oled.clearDisplay();
-  oled.setTextSize(1);
-  oled.setTextColor(1);
-  oled.setCursor(0, 0);
+    oled.println("Initializing pulse oximeter..");
+    oled.display();
 
-  oled.println("Initializing pulse oximeter..");
-  oled.display();
+    //pinMode(16, OUTPUT);
+    Serial.print("Initializing pulse oximeter..");
 
-  //pinMode(16, OUTPUT);
-  Serial.print("Initializing pulse oximeter..");
-
-
+  */
   // Initialize the sensor. Failures are generally due to an improper I2C wiring, missing power supply
   // or wrong target chip. Occasionally fails on startup (very rare), just press reset on Arduino
   if (!sensor.begin()) {
@@ -93,20 +91,20 @@ void setup()
 
   if (!pox.begin()) {
     Serial.println("FAILED");
-    oled.clearDisplay();
-    oled.setTextSize(1);
-    oled.setTextColor(1);
-    oled.setCursor(0, 0);
-    oled.println("FAILED");
-    oled.display();
-    for (;;);
+    /* oled.clearDisplay();
+      oled.setTextSize(1);
+      oled.setTextColor(1);
+      oled.setCursor(0, 0);
+      oled.println("FAILED");
+      oled.display();
+      for (;;);*/
   } else {
-    oled.clearDisplay();
-    oled.setTextSize(1);
-    oled.setTextColor(1);
-    oled.setCursor(0, 0);
-    oled.println("SUCCESS");
-    oled.display();
+    /* oled.clearDisplay();
+      oled.setTextSize(1);
+      oled.setTextColor(1);
+      oled.setCursor(0, 0);
+      oled.println("SUCCESS");
+      oled.display();*/
     Serial.println("SUCCESS");
   }
 
@@ -123,9 +121,7 @@ void setup()
 
 
   // Register a callback for the beat detection
-  pox.setOnBeatDetectedCallback(onBeatDetected);
-
-
+  //pox.setOnBeatDetectedCallback(onBeatDetected);
 }
 
 void loop()
@@ -147,14 +143,13 @@ void loop()
   // on the fly if the trace is off screen. The default was determined
   // By analysis of the raw data returned
 
-  pox.update();                               // Request pulse and o2 data from sensor
   sensor.update();                            // request raw data from sensor
+  //bool stop = 1;
+  pox.update();                               // Request pulse and o2 data from sensor
 
-
+  
   BPM = pox.getHeartRate();
   SpO2 = pox.getSpO2();
-  //bool stop = 1;
-
 
   if (sensor.getRawValues(&ir, &red)) {      // If raw data available for IR and Red
 
@@ -166,14 +161,14 @@ void loop()
 
     if (red < 1000)  {
       //Serial.println("Please Place your finger");
-      oled.clearDisplay();
-      oled.setTextSize(1);
-      oled.setTextColor(1);
-      oled.setCursor(30, 5);
-      oled.println("Please Place ");
-      oled.setCursor(30, 25);
-      oled.println("your finger ");
-      oled.display();
+      /* oled.clearDisplay();
+        oled.setTextSize(1);
+        oled.setTextColor(1);
+        oled.setCursor(30, 5);
+        oled.println("Please Place ");
+        oled.setCursor(30, 25);
+        oled.println("your finger ");
+        oled.display();*/
 
 
     }
@@ -181,42 +176,47 @@ void loop()
 
     if (millis() - tsLastReport > REPORTING_PERIOD_MS && red > 3000) {
 
+
+
+
+
+
       //Serial.println("I'm in ");
+
+      Serial.print("Heart rate:");
+      Serial.print(BPM);
+      Serial.print(" bpm / SpO2:");
+      Serial.print(SpO2);
+      Serial.println(" %");
       /*
-        Serial.print("Heart rate:");
-        Serial.print(BPM);
-        Serial.print(" bpm / SpO2:");
-        Serial.print(SpO2);
-        Serial.println(" %");
-      */
 
-      oled.clearDisplay();
-      oled.setTextSize(1);
-      oled.setTextColor(1);
-      oled.setCursor(0, 16);
-      oled.println(pox.getHeartRate());
+        oled.clearDisplay();
+        oled.setTextSize(1);
+        oled.setTextColor(1);
+        oled.setCursor(0, 16);
+        oled.println(pox.getHeartRate());
 
-      oled.setTextSize(1);
-      oled.setTextColor(1);
-      oled.setCursor(0, 0);
-      oled.println("Heart BPM");
+        oled.setTextSize(1);
+        oled.setTextColor(1);
+        oled.setCursor(0, 0);
+        oled.println("Heart BPM");
 
-      oled.setTextSize(1);
-      oled.setTextColor(1);
-      oled.setCursor(0, 30);
-      oled.println("Spo2");
+        oled.setTextSize(1);
+        oled.setTextColor(1);
+        oled.setCursor(0, 30);
+        oled.println("Spo2");
 
-      oled.setTextSize(1);
-      oled.setTextColor(1);
-      oled.setCursor(0, 45);
-      oled.println(pox.getSpO2());
-      oled.display();
+        oled.setTextSize(1);
+        oled.setTextColor(1);
+        oled.setCursor(0, 45);
+        oled.println(pox.getSpO2());
+        oled.display();  */
       tsLastReport = millis();
 
 
     }
 
-    if (red > 1500 && red < 3700 && BPM > 30 && SpO2 > 50) {    // post data to DB when finger leave
+    if (red > 2000 && red < 3700 && BPM > 30 && SpO2 > 50) {    // post data to DB when finger leave
       /*
         Serial.print("Heart rate_post:");
         Serial.print(BPM);
@@ -227,18 +227,7 @@ void loop()
 
       servletGo(BPM, SpO2);
 
-      oled.clearDisplay();
-      oled.setTextSize(1);
-      oled.setTextColor(1);
-      oled.setCursor(30, 5);
-      oled.println("Upload data ");
-      oled.setCursor(30, 25);
-      oled.println("to DB ");
-      oled.display();
-
-      //delay(500);
-      Serial.println("***** RESET ******");    
-      ESP.reset();                            // fix the frozen problem
+      delay(1500);
 
       //Serial.print("red:");
       //Serial.println(red);
@@ -257,8 +246,6 @@ void servletGo(uint8_t BPM, uint8_t SpO2) {
   // REPLACE with your Domain name and URL path or IP address with path
   //const char* serverName = "http://192.168.10.12:8080/FinalProject/bpminsert";        //Stan==> for send data to jsp===============================================
   const char* serverName = "http://192.168.0.3:8080/FinalProject/bpminsert";
-
-  
 
   //Check WiFi connection status
   if (WiFi.status() == WL_CONNECTED) {
