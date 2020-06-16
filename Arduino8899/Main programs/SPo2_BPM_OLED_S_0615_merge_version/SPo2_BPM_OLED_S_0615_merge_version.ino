@@ -27,7 +27,7 @@ PulseOximeter pox;          // Pulse and Oxygen
 OakOLED oled;
 
 
-//const char ssid[] = "XZ2 sasa";          //wifi  SSID & Password 
+//const char ssid[] = "XZ2 sasa";          //wifi  SSID & Password
 //const char pwd[] = "0920231219";
 //const char ssid[] = "chtti_NC";
 //const char pwd[] = "chtti@chtti";
@@ -67,7 +67,7 @@ void setup()
   Serial.println(WiFi.localIP());
   Serial.print("WiFi RSSI: ");
   Serial.println(WiFi.RSSI());
-  
+
   oled.begin();
   oled.clearDisplay();
   oled.setTextSize(1);
@@ -77,7 +77,7 @@ void setup()
   oled.println("Initializing pulse oximeter..");
   oled.display();
 
-  pinMode(16, OUTPUT);
+  //pinMode(16, OUTPUT);
   Serial.print("Initializing pulse oximeter..");
 
 
@@ -149,6 +149,8 @@ void loop()
 
   BPM = pox.getHeartRate();
   SpO2 = pox.getSpO2();
+  //bool stop = 1;
+
 
   if (sensor.getRawValues(&ir, &red)) {      // If raw data available for IR and Red
 
@@ -172,59 +174,62 @@ void loop()
 
     }
 
-    
 
+    if (millis() - tsLastReport > REPORTING_PERIOD_MS && red > 3000) {
 
-      if (millis() - tsLastReport > REPORTING_PERIOD_MS &&(red > 3000)) {
-
+      //Serial.println("I'm in ");
+      /*
         Serial.print("Heart rate:");
         Serial.print(BPM);
         Serial.print(" bpm / SpO2:");
         Serial.print(SpO2);
         Serial.println(" %");
+      */
+
+      oled.clearDisplay();
+      oled.setTextSize(1);
+      oled.setTextColor(1);
+      oled.setCursor(0, 16);
+      oled.println(pox.getHeartRate());
+
+      oled.setTextSize(1);
+      oled.setTextColor(1);
+      oled.setCursor(0, 0);
+      oled.println("Heart BPM");
+
+      oled.setTextSize(1);
+      oled.setTextColor(1);
+      oled.setCursor(0, 30);
+      oled.println("Spo2");
+
+      oled.setTextSize(1);
+      oled.setTextColor(1);
+      oled.setCursor(0, 45);
+      oled.println(pox.getSpO2());
+      oled.display();
+      tsLastReport = millis();
 
 
-        oled.clearDisplay();
-        oled.setTextSize(1);
-        oled.setTextColor(1);
-        oled.setCursor(0, 16);
-        oled.println(pox.getHeartRate());
+    }
 
-        oled.setTextSize(1);
-        oled.setTextColor(1);
-        oled.setCursor(0, 0);
-        oled.println("Heart BPM");
-
-        oled.setTextSize(1);
-        oled.setTextColor(1);
-        oled.setCursor(0, 30);
-        oled.println("Spo2");
-
-        oled.setTextSize(1);
-        oled.setTextColor(1);
-        oled.setCursor(0, 45);
-        oled.println(pox.getSpO2());
-        oled.display();
-        tsLastReport = millis();
-
-
-      }
-
-      if (red>2300 && red < 3400 && BPM > 30 && SpO2 > 50) {        // post data to DB when finger leave
-        
+    if (red > 2000 && red < 3700 && BPM > 30 && SpO2 > 50) {    // post data to DB when finger leave
+      /*
         Serial.print("Heart rate_post:");
         Serial.print(BPM);
         Serial.print(" bpm / SpO2_post:");
         Serial.print(SpO2);
         Serial.println(" %");
+      */
 
-        servletGo(BPM,SpO2);
+      servletGo(BPM, SpO2);
 
-        Serial.print("red:");
-        Serial.println(red);
-        
-      }
+      delay(1500);
 
+      //Serial.print("red:");
+      //Serial.println(red);
+
+
+    }
   }
 
 }
