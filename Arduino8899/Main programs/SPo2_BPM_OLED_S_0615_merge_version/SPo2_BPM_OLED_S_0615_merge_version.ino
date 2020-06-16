@@ -210,7 +210,7 @@ void loop()
 
       }
 
-      if (red>2900 && red < 3400 && BPM > 30 && SpO2 > 50) {        // post data to DB when finger leave
+      if (red>2300 && red < 3400 && BPM > 30 && SpO2 > 50) {        // post data to DB when finger leave
         
         Serial.print("Heart rate_post:");
         Serial.print(BPM);
