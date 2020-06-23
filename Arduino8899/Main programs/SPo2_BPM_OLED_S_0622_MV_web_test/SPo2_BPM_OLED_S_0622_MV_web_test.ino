@@ -7,7 +7,6 @@
 
 #include <ESP8266WebServer.h>     //Stan_webserver
 
-
 #include "Wire.h"
 #include "Adafruit_GFX.h"
 #include "OakOLED.h"
@@ -30,6 +29,8 @@ PulseOximeter pox;          // Pulse and Oxygen
 OakOLED oled;
 
 ESP8266WebServer server(80);    //Stan_web object
+
+
 
 
 //const char ssid[] = "XZ2 sasa";          //wifi  SSID & Password
@@ -58,14 +59,6 @@ void onBeatDetected()
 }
 
 
-void handleRoot() {
-  String HTML = "<!DOCTYPE html>\
-  <html><head><meta charset= 'utf-8' ></head>\
-  <body>快傳病人編號給我,笨蛋!</body></html>";
-  server.send(200, "text/html", HTML);
-
-}
-
 
 void setup()
 {
@@ -82,22 +75,6 @@ void setup()
   Serial.println(WiFi.localIP());
   Serial.print("WiFi RSSI: ");
   Serial.println(WiFi.RSSI());
-
-  server.on("/", handleRoot);
-  server.on("/about", []() {
-    server.send(200, "text/html" , "hello Donkey!");        //stan_if request sucess, response this.
-
-  });
-
-  server.onNotFound([]() {
-    server.send(404, "text/html" , "File Not found!!!");
-  });
-
-
-
-
-  server.begin();      //stan_ webserver on
-
 
 
   oled.begin();
@@ -159,25 +136,6 @@ void setup()
 }
 
 void loop() {
-
-
-  server.handleClient();             // service for client
-
-
-  server.on("/sw", []() {
-    String patno = server.arg("patno");
-
-    if (patno != NULL) {
-      Serial.print("Get the patno");
-      Serial.println(patno);
-
-    }
-    else {
-      Serial.print("Get Nothing");
-
-    }
-
-  });
 
 
   //int16_t Diff = 0;                           // The difference between the Infra Red (IR) and Red LED raw results
@@ -263,6 +221,8 @@ void loop() {
       tsLastReport = millis();
 
 
+      //poorWeb (BPM, SpO2);
+
     }
 
     if (red > 1500 && red < 3700 && BPM > 30 && SpO2 > 50) {    // post data to DB when finger leave
@@ -306,22 +266,25 @@ void servletGo(uint8_t BPM, uint8_t SpO2) {
   // REPLACE with your Domain name and URL path or IP address with path
   //const char* serverName = "http://192.168.10.12:8080/FinalProject/bpminsert";        //Stan==> for send data to jsp===============================================
   const char* serverName = "http://192.168.0.3:8080/FinalProject/bpminsert";
-
+  //const char* serverName = "http://192.168.0.6:8080/
 
 
   //Check WiFi connection status
   if (WiFi.status() == WL_CONNECTED) {
+
     HTTPClient http;
+
 
     // Your Domain name with URL path or IP address with path
     http.begin(serverName);
 
     // Specify content-type header
-    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+    http.addHeader("Content - Type", "application / x - www - form - urlencoded");
 
 
     // Prepare your HTTP POST request data
-    String httpRequestData = "Pulse_Rate=" + String(BPM) + "&SpO2=" + String(SpO2) + "&Patno=20";
+    String httpRequestData = "Pulse_Rate = " + String(BPM) + "&SpO2 = " + String(SpO2) + "&Patno = 20";
+
 
     Serial.print("httpRequestData: ");
     Serial.println(httpRequestData);
@@ -359,5 +322,43 @@ void servletGo(uint8_t BPM, uint8_t SpO2) {
   //delay(15000);
 
 
+
+}
+
+
+
+void poorWeb (uint8_t B, uint8_t S) {
+  uint8_t BPM = B;
+  uint8_t SpO2 = S;
+
+  server.on("/", handleRoot(BPM, SpO2));
+  server.on("/about", []() {
+    server.send(200, "text/html" , "hello Donkey!");        //stan_if request sucess, response this.
+
+  });
+
+  server.onNotFound([]() {
+    server.send(404, "text/html" , "File Not found!!!");
+  });
+
+
+  server.begin();      //stan_ webserver on
+
+
+
+  server.handleClient();             // service for client
+
+}
+
+
+
+void handleRoot(uint8_t BPM, uint8_t SpO2) {
+  String HTML = "<!DOCTYPE html>\
+  <html><head><meta charset= 'utf-8' ></head>\
+  <body><h2>快傳病人編號給我,笨蛋!</h2>\
+  <P>心跳:" + String(BPM) + "</P>\
+  <P>血氧:" + String(SpO2) + "</p>\
+  </body></html>";
+  server.send(200, "text/html", HTML);
 
 }
