@@ -25,10 +25,10 @@ ESP8266WebServer server(80);    //Stan_create webserver object
 
 //const char ssid[] = "XZ2 sasa";          //wifi  SSID & Password
 //const char pwd[] = "0920231219";
-const char ssid[] = "chtti_NC";
-const char pwd[] = "chtti@chtti";
-//const char ssid[] = "SASAT";
-//const char pwd[] = "0920231219";
+//const char ssid[] = "chtti_NC";
+//const char pwd[] = "chtti@chtti";
+const char ssid[] = "SASAT";
+const char pwd[] = "0920231219";
 
 //Stan_ these three variables are using to do average BPM & SpO2
 int BB[4];
@@ -62,10 +62,10 @@ void onBeatDetected()
 void servletGo(int BBS, int spss) {
 
   // REPLACE with your Domain name and URL path or IP address with path
-  const char* serverName = "http://192.168.10.12:8080/FinalProject/bpminsert";        //Stan==> for send data to jsp===============================================
+  //const char* serverName = "http://192.168.10.12:8080/FinalProject/bpminsert";        //Stan==> for send data to jsp===============================================
   //const char* serverName = "http://192.168.0.3:8080/FinalProject/bpminsert";
-
-
+  const char* serverName = "http://wilsonwang.ddns.net:8899/FinalProject/bpminsert";
+  
 
   //Check WiFi connection status
   if (WiFi.status() == WL_CONNECTED) {
@@ -79,7 +79,8 @@ void servletGo(int BBS, int spss) {
 
 
     // Prepare your HTTP POST request data
-    String httpRequestData = "Pulse_Rate=" + String(BBS) + "&SpO2=" + String(spss) + "&Patno=" + String(patno);
+    //String httpRequestData = "Pulse_Rate=" + String(BBS) + "&SpO2=" + String(spss) + "&Patno=" + String(patno);
+    String httpRequestData = "Pulse_Rate=" + String(BBS) + "&Patno=" + String(patno);
 
     Serial.print("httpRequestData: ");
     Serial.println(httpRequestData);
@@ -229,10 +230,10 @@ void loop() {
   uint16_t ir, red;                           // raw results returned in these
   uint8_t BPM, SpO2;                            // BPM and O2 values
   static uint32_t tsLastReport = 0;           // Last time BMP/O2 were checked
-
+  
   pox.update();                               // Request pulse and o2 data from sensor
   sensor.update();                            // request raw data from sensor
-
+  
   BPM = pox.getHeartRate();
   SpO2 = pox.getSpO2();
 
@@ -258,10 +259,10 @@ void loop() {
       oled.display();
     }
 
-    if (millis() - tsLastReport > REPORTING_PERIOD_MS && red > 3000) {
+    if (millis() - tsLastReport > REPORTING_PERIOD_MS && red > 2000) {
 
       //Serial.println("I'm in ");
-    
+      
       if (count == 4) {                      //Stan_ it is to set BPM & SpO2 each 4 datas into BB[] & sps[],prepare to average.
         count = 0;
         Serial.print("count is ");
@@ -303,7 +304,7 @@ void loop() {
       oled.println(pox.getSpO2());
       oled.display();
       tsLastReport = millis();
-
+      
     }
 
     if (red > 1500 && red < 3700 && BPM > 30 && SpO2 > 50) {    // post data to DB when finger leave
