@@ -63,8 +63,8 @@ void servletGo(int BBS, int spss) {
 
   // REPLACE with your Domain name and URL path or IP address with path
   //const char* serverName = "http://192.168.10.12:8080/FinalProject/bpminsert";        //Stan==> for send data to jsp===============================================
-  //const char* serverName = "http://192.168.0.3:8080/FinalProject/bpminsert";
-  const char* serverName = "http://wilsonwang.ddns.net:8899/FinalProject/bpminsert";
+  const char* serverName = "http://192.168.0.3:8080/FinalProject/bpminsert";
+  //const char* serverName = "http://wilsonwang.ddns.net:8899/FinalProject/bpminsert";
   
 
   //Check WiFi connection status
@@ -79,8 +79,8 @@ void servletGo(int BBS, int spss) {
 
 
     // Prepare your HTTP POST request data
-    //String httpRequestData = "Pulse_Rate=" + String(BBS) + "&SpO2=" + String(spss) + "&Patno=" + String(patno);
-    String httpRequestData = "Pulse_Rate=" + String(BBS) + "&Patno=" + String(patno);
+    String httpRequestData = "Pulse_Rate=" + String(BBS) + "&SpO2=" + String(spss) + "&Patno=" + String(patno);
+    
 
     Serial.print("httpRequestData: ");
     Serial.println(httpRequestData);

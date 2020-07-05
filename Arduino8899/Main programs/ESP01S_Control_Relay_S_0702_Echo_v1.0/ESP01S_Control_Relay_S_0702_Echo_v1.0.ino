@@ -6,6 +6,12 @@
 #ifndef STASSID
 #define STASSID "SASAT"  //無線分享器的名稱
 #define STAPSK  "0920231219"    //密碼
+
+//#define STASSID "XZ2 sasa"  //無線分享器的名稱
+//#define STAPSK  "0920231219"    //密碼
+
+//#define STASSID "chtti_NC"  //無線分享器的名稱
+//#define STAPSK  "chtti@chtti"    //密碼
 #define RELAY 0 // relay connected to  GPIO0
 #endif
 
