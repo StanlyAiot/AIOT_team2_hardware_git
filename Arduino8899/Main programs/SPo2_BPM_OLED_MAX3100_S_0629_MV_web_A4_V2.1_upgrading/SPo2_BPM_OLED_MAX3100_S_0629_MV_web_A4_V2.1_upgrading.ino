@@ -63,8 +63,8 @@ void servletGo(int BBS, int spss) {
 
   // REPLACE with your Domain name and URL path or IP address with path
   //const char* serverName = "http://192.168.10.12:8080/FinalProject/bpminsert";        //Stan==> for send data to jsp===============================================
-  const char* serverName = "http://192.168.0.3:8080/FinalProject/bpminsert";
-  //const char* serverName = "http://wilsonwang.ddns.net:8899/FinalProject/bpminsert";
+  //const char* serverName = "http://192.168.0.3:8080/FinalProject/bpminsert";
+  const char* serverName = "http://wilsonwang.ddns.net:8899/HealthCare/bpminsert";
   
 
   //Check WiFi connection status
